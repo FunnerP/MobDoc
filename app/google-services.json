@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "525825311568",
+    "project_id": "mobdoc-2c76c",
+    "storage_bucket": "mobdoc-2c76c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525825311568:android:f2ad85186246fac1956255",
+        "android_client_info": {
+          "package_name": "com.example.mobdoc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDleDNcgQ0V8eUdYdhR3IlbLzqHtF99Nlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
