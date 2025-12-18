@@ -58,7 +58,6 @@ fun UserEditScreen(
 )
 {
     var name by remember { mutableStateOf(user?.name?:"") }
-    var password by remember { mutableStateOf(user?.password?:"") }
     var role by remember { mutableStateOf(user?.role?:"") }
     val isEditing = user != null
 
@@ -82,12 +81,11 @@ fun UserEditScreen(
                             viewModel.updateUser(
                                 user!!.copy(
                                     name = name,
-                                    password = password,
                                     role = role,
                                 )
                             )
                         } else {
-                            viewModel.addUser(name, password, role)
+//                            viewModel.addUser(name, role)
                         }
                         onBack()
                     }
@@ -131,15 +129,6 @@ fun UserEditScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Пароль") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp),
-                singleLine = false
-            )
 
         }
     }

@@ -89,7 +89,7 @@ fun UserListScreen(
                         UserItem(
                             user = user,
                             onEdit = { onEditUser(user) },
-                            onDelete = { viewModel.deleteUser(user.id) })
+                            onDelete = { viewModel.deleteUser(user.name) })
                     }
                 }
             }
