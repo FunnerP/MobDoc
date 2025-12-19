@@ -28,9 +28,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import com.example.mobdoc.ViewModels.HomeViewModel
-import com.example.mobdoc.screens.Home
+import com.example.mobdoc.Models.Doctor
+import com.example.mobdoc.Models.Patient
+import com.example.mobdoc.screens.LoginScreen
+import com.example.mobdoc.screens.MainScreen
 import com.example.mobdoc.ui.theme.MobDocTheme
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,149 +64,57 @@ fun AppNavHost() {
     }
 }
 
-@Composable
-fun LoginScreen(navController: NavHostController) {
-    val auth = FirebaseAuth.getInstance()
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var loading by remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Вход / Регистрация", style = MaterialTheme.typography.h5, modifier = Modifier.padding(bottom = 24.dp))
-
-        TextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(8.dp))
-        TextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(Modifier.height(16.dp))
-
-        if (loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-        } else {
-            Button(
-                onClick = {
-                    errorMessage = null
-                    loading = true
-                    auth.signInWithEmailAndPassword(email.trim(), password)
-                        .addOnCompleteListener { task ->
-                            loading = false
-                            if (task.isSuccessful) {
-                                navController.navigate("main") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                            } else {
-                                errorMessage = task.exception?.localizedMessage ?: "Ошибка входа"
-                            }
-                        }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Войти")
-            }
-            Spacer(Modifier.height(8.dp))
-            OutlinedButton(
-                onClick = {
-                    errorMessage = null
-                    loading = true
-                    auth.createUserWithEmailAndPassword(email.trim(), password)
-                        .addOnCompleteListener { task ->
-                            loading = false
-                            if (task.isSuccessful) {
-                                navController.navigate("main") {
-                                    popUpTo("login") { inclusive = true }
-                                }
-                            } else {
-                                errorMessage = task.exception?.localizedMessage ?: "Ошибка регистрации"
-                            }
-                        }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Зарегистрироваться")
-            }
-        }
-
-        errorMessage?.let {
-            Spacer(Modifier.height(16.dp))
-            Text(text = it, color = Color.Red)
-        }
-    }
-}
-
-@Composable
-fun MainScreen() {
-    val navController= rememberNavController()
-    Column(Modifier.padding(top = 24.dp, bottom = 8.dp,)){
-        NavHost(navController, startDestination = NavRoutes.Home.route, modifier = Modifier.weight(1f)){
-            composable(NavRoutes.Home.route){ Home(viewModel()) }
-            composable(NavRoutes.Contacts.route){Contacts()}
-            composable(NavRoutes.About.route){About()}
-        }
-        BottomNavigationBar(navController=navController)
-    }
-}
-@Composable
-fun BottomNavigationBar(navController: NavController){
-    NavigationBar {
-        val backStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute=backStackEntry?.destination?.route
-        NavBarItems.BarItems.forEach { navItem->
-            NavigationBarItem(
-                selected = currentRoute==navItem.route,
-                onClick = {
-                    navController.navigate(navItem.route){
-                        popUpTo(navController.graph.findStartDestination().id){saveState=true}
-                        launchSingleTop=true
-                        restoreState=true
-                    }
-                } ,
-                icon = { Icon(imageVector = navItem.image,
-                    contentDescription = navItem.title) },
-                label = {
-                    Text(text = navItem.title)
-                }
-            )
-        }
-    }
-}
-object NavBarItems{
-    val BarItems=listOf(
-        BarItem(title = "Home", image = Icons.Filled.Home, route = "home"),
-        BarItem(title = "Contacts", image = Icons.Filled.Face, route = "contacts"),
-        BarItem(title = "About", image = Icons.Filled.Info, route = "about"),
-    )
-}
-data class BarItem(
-    val title: String,
-    val image: ImageVector,
-    val route: String
-)
-@Composable
-fun Contacts(){
-    Text("Contact page", fontSize = 30.sp)
-}
-@Composable
-fun About(){
-    Text("About page", fontSize = 30.sp)
-}
-sealed class NavRoutes(val route: String){
-    object Home: NavRoutes("home")
-    object Contacts: NavRoutes("contacts")
-    object About: NavRoutes("about")
-}
+//@Composable
+//fun MainScreen() {
+//    val navController= rememberNavController()
+//    Column(Modifier.padding(top = 24.dp, bottom = 8.dp,)){
+//        NavHost(navController, startDestination = NavRoutes.Home.route, modifier = Modifier.weight(1f)){
+//            composable(NavRoutes.Home.route){ Home() }
+//            composable(NavRoutes.About.route){About()}
+//        }
+//        BottomNavigationBar(navController=navController)
+//    }
+//}
+//@Composable
+//fun BottomNavigationBar(navController: NavController){
+//    NavigationBar {
+//        val backStackEntry by navController.currentBackStackEntryAsState()
+//        val currentRoute=backStackEntry?.destination?.route
+//        NavBarItems.BarItems.forEach { navItem->
+//            NavigationBarItem(
+//                selected = currentRoute==navItem.route,
+//                onClick = {
+//                    navController.navigate(navItem.route){
+//                        popUpTo(navController.graph.findStartDestination().id){saveState=true}
+//                        launchSingleTop=true
+//                        restoreState=true
+//                    }
+//                } ,
+//                icon = { Icon(imageVector = navItem.image,
+//                    contentDescription = navItem.title) },
+//                label = {
+//                    Text(text = navItem.title)
+//                }
+//            )
+//        }
+//    }
+//}
+//object NavBarItems{
+//    val BarItems=listOf(
+//        BarItem(title = "Home", image = Icons.Filled.Home, route = "home"),
+//        BarItem(title = "About", image = Icons.Filled.Info, route = "about"),
+//    )
+//}
+//data class BarItem(
+//    val title: String,
+//    val image: ImageVector,
+//    val route: String
+//)
+//@Composable
+//fun About(){
+//    Text("About page", fontSize = 30.sp)
+//}
+//sealed class NavRoutes(val route: String){
+//    object Home: NavRoutes("home")
+//    object About: NavRoutes("about")
+//}

@@ -33,6 +33,7 @@ materialVersion = "1.5.0-alpha01"
 materialIconsExtendedVersion = "1.5.0-alpha01"
 googleServices = "4.3.15"
 adsMobileSdk = "0.22.0-beta04"
+firebaseFirestore = "26.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,6 +74,7 @@ androidx-compose-material = { group = "androidx.compose.material", name = "mater
 androidx-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "materialIconsExtendedVersion" }
 google-services = { group = "com.google.gms", name = "google-services", version.ref = "googleServices" }
 ads-mobile-sdk = { group = "com.google.android.libraries.ads.mobile.sdk", name = "ads-mobile-sdk", version.ref = "adsMobileSdk" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
