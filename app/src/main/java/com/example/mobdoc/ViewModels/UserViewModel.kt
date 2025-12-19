@@ -54,13 +54,13 @@ class UserViewModel: ViewModel() {
             }
         }
     }
-    fun addUser(name: String, password: String, role: String) {
+    fun addUser(name: String, email: String, role: String) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 val newUser = User(
                     name = name,
-                    password = password,
+                    email = email,
                     role = role
                 )
                 repository.addUser(newUser)
