@@ -1,5 +1,6 @@
 package com.example.mobdoc.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.google.firebase.auth.FirebaseAuth
@@ -11,7 +12,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.mobdoc.AppNavHost
 import com.example.mobdoc.Models.Doctor
+import com.example.mobdoc.Models.MedHis
 import com.example.mobdoc.Models.Patient
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,7 +23,7 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.tasks.await
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     val firestore = Firebase.firestore
     val auth = FirebaseAuth.getInstance()
 
@@ -28,7 +32,9 @@ fun MainScreen() {
     var userRole by remember { mutableStateOf<String?>(null) }
     var doctors by remember { mutableStateOf(listOf<Doctor>()) }
     var patients by remember { mutableStateOf(listOf<Patient>()) }
+    val medhists by remember { mutableStateOf(listOf<MedHis>()) }
     var isLoading by remember { mutableStateOf(true) }
+    var selectedPatient by remember { mutableStateOf<Patient?>(null) }
 
     LaunchedEffect(currentUser.uid) {
         // Определяем роль текущего пользователя
@@ -86,10 +92,11 @@ fun MainScreen() {
             } else {
                 LazyColumn {
                     items(patients) { patient ->
-                        Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                        Card(Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable { navController.navigate("about/${patient.uid}") }  // Обработка клика
+                        ) {
                             Column(Modifier.padding(8.dp)) {
+                                Text(text = "Name: ${patient.name}")
                                 Text(text = "Email: ${patient.email}")
-                                Text(text = "История болезни: ${patient.medicalHistory}")
                             }
                         }
                     }
@@ -103,6 +110,7 @@ fun MainScreen() {
                 doctors.forEach { doc ->
                     Card(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
                         Column(Modifier.padding(8.dp)) {
+                            Text(text = "Name: ${doc.name}")
                             Text(text = "Email: ${doc.email}")
                             Text(text = "Специальность: ${doc.specialty}")
                         }
@@ -115,8 +123,9 @@ fun MainScreen() {
 
         Spacer(Modifier.height(24.dp))
 
-        Button(onClick = { auth.signOut(); /* навигация к LoginScreen */ }) {
+        Button(onClick = { auth.signOut(); navController.navigate("login") }) {
             Text("Выйти")
         }
     }
+
 }

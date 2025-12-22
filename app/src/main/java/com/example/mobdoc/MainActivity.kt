@@ -30,6 +30,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.mobdoc.Models.Doctor
 import com.example.mobdoc.Models.Patient
+import com.example.mobdoc.screens.AboutScreen
 import com.example.mobdoc.screens.LoginScreen
 import com.example.mobdoc.screens.MainScreen
 import com.example.mobdoc.ui.theme.MobDocTheme
@@ -60,61 +61,10 @@ fun AppNavHost() {
         startDestination = if (currentUser == null) "login" else "main"
     ) {
         composable("login") { LoginScreen(navController) }
-        composable("main") { MainScreen() }
+        composable("main") { MainScreen(navController)}
+        composable("about/{patientId}") { backStackEntry ->
+            val patientId = backStackEntry.arguments?.getString("patientId") ?: ""
+            AboutScreen(patientId, navController)
+        }
     }
 }
-
-//@Composable
-//fun MainScreen() {
-//    val navController= rememberNavController()
-//    Column(Modifier.padding(top = 24.dp, bottom = 8.dp,)){
-//        NavHost(navController, startDestination = NavRoutes.Home.route, modifier = Modifier.weight(1f)){
-//            composable(NavRoutes.Home.route){ Home() }
-//            composable(NavRoutes.About.route){About()}
-//        }
-//        BottomNavigationBar(navController=navController)
-//    }
-//}
-//@Composable
-//fun BottomNavigationBar(navController: NavController){
-//    NavigationBar {
-//        val backStackEntry by navController.currentBackStackEntryAsState()
-//        val currentRoute=backStackEntry?.destination?.route
-//        NavBarItems.BarItems.forEach { navItem->
-//            NavigationBarItem(
-//                selected = currentRoute==navItem.route,
-//                onClick = {
-//                    navController.navigate(navItem.route){
-//                        popUpTo(navController.graph.findStartDestination().id){saveState=true}
-//                        launchSingleTop=true
-//                        restoreState=true
-//                    }
-//                } ,
-//                icon = { Icon(imageVector = navItem.image,
-//                    contentDescription = navItem.title) },
-//                label = {
-//                    Text(text = navItem.title)
-//                }
-//            )
-//        }
-//    }
-//}
-//object NavBarItems{
-//    val BarItems=listOf(
-//        BarItem(title = "Home", image = Icons.Filled.Home, route = "home"),
-//        BarItem(title = "About", image = Icons.Filled.Info, route = "about"),
-//    )
-//}
-//data class BarItem(
-//    val title: String,
-//    val image: ImageVector,
-//    val route: String
-//)
-//@Composable
-//fun About(){
-//    Text("About page", fontSize = 30.sp)
-//}
-//sealed class NavRoutes(val route: String){
-//    object Home: NavRoutes("home")
-//    object About: NavRoutes("about")
-//}

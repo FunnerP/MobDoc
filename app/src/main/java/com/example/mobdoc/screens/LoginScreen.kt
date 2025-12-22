@@ -39,6 +39,7 @@ fun LoginScreen(navController: NavHostController) {
     val auth = FirebaseAuth.getInstance()
     val firestore = Firebase.firestore
 
+    var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var role by remember { mutableStateOf("Patient") }
@@ -70,6 +71,13 @@ fun LoginScreen(navController: NavHostController) {
 
         Spacer(Modifier.height(16.dp))
 
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Ваше ФИО") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(Modifier.height(8.dp))
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -121,11 +129,11 @@ fun LoginScreen(navController: NavHostController) {
                                 // Запись в Firestore по роли
                                 val docRef = when(role) {
                                     "doctor" -> {
-                                        val doctor = Doctor(uid = uid, email = email, specialty = "")
+                                        val doctor = Doctor(uid = uid, name = name, email = email, specialty = "")
                                         firestore.collection("doctors").document(uid).set(doctor)
                                     }
                                     else -> {
-                                        val patient = Patient(uid = uid, email = email, medicalHistory = "", doctorId = "")
+                                        val patient = Patient(uid = uid, name = name, email = email, doctorId = "")
                                         firestore.collection("patients").document(uid).set(patient)
                                     }
                                 }
