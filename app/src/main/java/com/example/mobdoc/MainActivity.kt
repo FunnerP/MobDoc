@@ -33,6 +33,7 @@ import com.example.mobdoc.Models.Patient
 import com.example.mobdoc.screens.AboutScreen
 import com.example.mobdoc.screens.LoginScreen
 import com.example.mobdoc.screens.MainScreen
+import com.example.mobdoc.screens.RegisterScreen
 import com.example.mobdoc.ui.theme.MobDocTheme
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -61,6 +62,7 @@ fun AppNavHost() {
         startDestination = if (currentUser == null) "login" else "main"
     ) {
         composable("login") { LoginScreen(navController) }
+        composable("register") { RegisterScreen(navController) }
         composable("main") { MainScreen(navController)}
         composable("about/{patientId}") { backStackEntry ->
             val patientId = backStackEntry.arguments?.getString("patientId") ?: ""
