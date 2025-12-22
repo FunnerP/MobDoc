@@ -32,9 +32,7 @@ fun MainScreen(navController: NavController) {
     var userRole by remember { mutableStateOf<String?>(null) }
     var doctors by remember { mutableStateOf(listOf<Doctor>()) }
     var patients by remember { mutableStateOf(listOf<Patient>()) }
-    val medhists by remember { mutableStateOf(listOf<MedHis>()) }
     var isLoading by remember { mutableStateOf(true) }
-    var selectedPatient by remember { mutableStateOf<Patient?>(null) }
 
     LaunchedEffect(currentUser.uid) {
         // Определяем роль текущего пользователя
